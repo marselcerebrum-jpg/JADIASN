@@ -39,6 +39,7 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .section-title .icon.vs { background: #2D5BFF; color: white; }
 .section-title .icon.alert { background: #EF4444; color: white; }
 .section-title .icon.star { background: #F59E0B; color: white; }
+.tab-icon.action { background: linear-gradient(135deg, #F59E0B, #EF4444); color: white; }
 .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 24px; }
 .chart-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 .chart-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #334155; }
@@ -174,6 +175,42 @@ tr:hover td { background: #F8FAFC; }
   .tab-nav { position:static; }
   .tab-btn { padding:8px 12px; font-size:12px; }
 }
+
+/* ACTION PLAN STYLES */
+.action-plan-header { background: linear-gradient(135deg, #1E293B 0%, #334155 100%); border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; color: white; }
+.action-plan-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.action-plan-header p { font-size: 13px; color: #94A3B8; }
+.plan-section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #E2E8F0; }
+.plan-section-header .plan-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: white; }
+.plan-section-header .plan-icon.mkt { background: linear-gradient(135deg, #2D5BFF, #7C3AED); }
+.plan-section-header .plan-icon.sls { background: linear-gradient(135deg, #F59E0B, #EF4444); }
+.plan-section-header h3 { font-size: 18px; font-weight: 700; color: #1A1F3D; }
+.plan-section-header span { font-size: 13px; color: #64748B; }
+.action-card { background: white; border-radius: 14px; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 14px; overflow: hidden; display: flex; transition: transform 0.15s, box-shadow 0.15s; }
+.action-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.action-num { min-width: 52px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: white; }
+.action-num.mkt { background: linear-gradient(180deg, #2D5BFF, #6366F1); }
+.action-num.sls { background: linear-gradient(180deg, #F59E0B, #EF4444); }
+.action-num.top3 { font-size: 24px; }
+.action-body { flex: 1; padding: 16px 20px; }
+.action-body h4 { font-size: 15px; font-weight: 700; color: #1A1F3D; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.action-body p { font-size: 13px; color: #475569; line-height: 1.55; margin-bottom: 8px; }
+.action-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.action-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+.action-tag.impact-high { background: #DCFCE7; color: #166534; }
+.action-tag.impact-med { background: #FEF9C3; color: #854D0E; }
+.action-tag.effort-low { background: #DBEAFE; color: #1E40AF; }
+.action-tag.effort-med { background: #F3E8FF; color: #6B21A8; }
+.action-tag.effort-high { background: #FEE2E2; color: #991B1B; }
+.action-tag.time-now { background: #D1FAE5; color: #065F46; }
+.action-tag.time-week { background: #FEF3C7; color: #92400E; }
+.action-tag.time-month { background: #FFE4E6; color: #9F1239; }
+.action-tag.priority { background: #EF4444; color: white; }
+.priority-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; font-size: 12px; color: #64748B; }
+.priority-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.priority-legend .dot { width: 10px; height: 10px; border-radius: 3px; }
+.action-kpi { font-size: 12px; color: #64748B; margin-top: 4px; font-style: italic; }
+
 </style>
 </head>
 <body>
@@ -205,6 +242,9 @@ tr:hover td { background: #F8FAFC; }
     </button>
     <button class="tab-btn" data-tab="target" onclick="showTab('target')">
       <span class="tab-icon target">🎯</span> Target Juni
+    </button>
+    <button class="tab-btn" data-tab="actionplan" onclick="showTab('actionplan')">
+      <span class="tab-icon action">⚡</span> Action Plan
     </button>
     <button class="tab-btn" data-tab="semua" onclick="showTab('semua')">
       <span class="tab-icon all">✦</span> Semua
@@ -1423,9 +1463,426 @@ tr:hover td { background: #F8FAFC; }
 
   </div><!-- /target -->
 
+  <div class="tab-page" data-tab="actionplan" id="page-actionplan">
+
+  <!-- HEADER -->
+  <div class="action-plan-header">
+    <h2>⚡ Action Plan — Prioritas Tindakan Q3 2026</h2>
+    <p>10 rencana marketing + 10 rencana sales yang harus diprioritaskan berdasarkan data dashboard. Urut dari impact tertinggi.</p>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="priority-legend">
+    <span><span class="dot" style="background:#DCFCE7"></span> Impact Tinggi</span>
+    <span><span class="dot" style="background:#FEF9C3"></span> Impact Sedang</span>
+    <span><span class="dot" style="background:#DBEAFE"></span> Effort Rendah</span>
+    <span><span class="dot" style="background:#F3E8FF"></span> Effort Sedang</span>
+    <span><span class="dot" style="background:#FEE2E2"></span> Effort Tinggi</span>
+    <span><span class="dot" style="background:#D1FAE5"></span> Mulai Sekarang</span>
+    <span><span class="dot" style="background:#FEF3C7"></span> Minggu Ini</span>
+    <span><span class="dot" style="background:#FFE4E6"></span> Bulan Ini</span>
+  </div>
+
+  <!-- ==================== MARKETING ==================== -->
+  <div class="section">
+    <div class="plan-section-header">
+      <div class="plan-icon mkt">M</div>
+      <div>
+        <h3>10 Rencana Marketing</h3>
+        <span>Fokus: Perbaiki top-of-funnel (Reach 15% → 40%) & tingkatkan brand awareness</span>
+      </div>
+    </div>
+
+    <!-- MKT 1 -->
+    <div class="action-card">
+      <div class="action-num mkt top3">1</div>
+      <div class="action-body">
+        <h4>Rebalance Content Pillar: Reach 15% → 40% <span class="action-tag priority">🔥 TOP PRIORITY</span></h4>
+        <p>Data dashboard: konten saat ini 40% Jualan, 20% Relasi, 25% Edukasi, <strong>hanya 15% Reach</strong> — padahal idealnya 40% Reach. Perbanyak konten Reach: tips singkat CPNS, infografik soal, reels edukatif 30 detik, meme relatable CPNS. Ini akar masalah rendahnya growth follower dan engagement.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: Reach rate IG naik dari 3% → 8% dalam 30 hari</div>
+      </div>
+    </div>
+
+    <!-- MKT 2 -->
+    <div class="action-card">
+      <div class="action-num mkt top3">2</div>
+      <div class="action-body">
+        <h4>TikTok Content Factory — 3 Konten/Hari <span class="action-tag priority">🔥 TOP PRIORITY</span></h4>
+        <p>TikTok JadiASN masih 14.4K followers vs kompetitor Studi CPNS yang agresif. Buat pipeline 3 konten TikTok/hari: (1) Tips cepat 15 detik, (2) Pembahasan soal live, (3) Behind the scene/testimoni. Gunakan hook kuat di 3 detik pertama. TikTok = channel Reach terbesar yang belum dimaksimalkan.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: TikTok followers 14.4K → 25K dalam 60 hari, 3 konten/hari konsisten</div>
+      </div>
+    </div>
+
+    <!-- MKT 3 -->
+    <div class="action-card">
+      <div class="action-num mkt top3">3</div>
+      <div class="action-body">
+        <h4>Lead Magnet: Free Mini Tryout SKD 30 Soal <span class="action-tag priority">🔥 TOP PRIORITY</span></h4>
+        <p>Downloader baru hanya 41.5% dari target Juni (9,716/23,411). Masalah: tidak ada insentif kuat untuk download. Buat mini tryout SKD gratis 30 soal + hasil skor instan sebagai lead magnet di bio IG, TikTok, dan seluruh channel. Ini langsung menarik calon CPNS untuk coba → download app → upsell Premium.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: Download rate naik 2× dari 442/hari → 900/hari</div>
+      </div>
+    </div>
+
+    <!-- MKT 4 -->
+    <div class="action-card">
+      <div class="action-num mkt">4</div>
+      <div class="action-body">
+        <h4>Kolaborasi 5 Micro-Influencer CPNS (10K-50K)</h4>
+        <p>Reach organik terbatas. Target 5 creator TikTok/IG bertema CPNS atau ASN lifestyle (followers 10K-50K) untuk review JadiASN. Format: barter akses Premium gratis 1 tahun + komisi affiliate per konversi. Leverage Sandler outreach playbook yang sudah ada untuk approach yang non-pushy.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 5 kolaborasi aktif, 2,000+ download dari referral dalam 30 hari</div>
+      </div>
+    </div>
+
+    <!-- MKT 5 -->
+    <div class="action-card">
+      <div class="action-num mkt">5</div>
+      <div class="action-body">
+        <h4>Konten "Bukti Nyata" — 10 Video Testimonial Promoter</h4>
+        <p>Data NPS: ada 23 customer surveyed, banyak Promoter (skor 9-10). Buat 10 video testimonial singkat (30-60 detik) dari customer Promoter. Fokus pada transformasi: "Dari skor 200 → lolos passing grade 311". Social proof ini langsung boost konversi di semua channel. Format: before/after + skor CAT.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 10 testimonial publish, CTR landing page naik 15%</div>
+      </div>
+    </div>
+
+    <!-- MKT 6 -->
+    <div class="action-card">
+      <div class="action-num mkt">6</div>
+      <div class="action-body">
+        <h4>SEO Blog — 20 Artikel Target Keyword CPNS</h4>
+        <p>Belum ada organic search channel. Buat 20 artikel SEO: "cara belajar CPNS 2026", "latihan soal SKD gratis", "tips lulus TIU deret angka", "passing grade CPNS 2026", etc. Setiap artikel embed CTA download JadiASN. Long-term traffic source yang compound. Prioritas keyword volume tinggi + competition rendah.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-high">✦ Effort Tinggi</span>
+          <span class="action-tag time-month">⏱ Bulan Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 20 artikel publish, 5,000 organic visits/bulan dalam 90 hari</div>
+      </div>
+    </div>
+
+    <!-- MKT 7 -->
+    <div class="action-card">
+      <div class="action-num mkt">7</div>
+      <div class="action-body">
+        <h4>Instagram Reels Challenge #1MenitCPNS</h4>
+        <p>Engagement rate rendah karena konten terlalu "jualan". Buat challenge viral: user jawab 1 soal CPNS dalam 1 menit, post reels dengan hashtag #1MenitCPNS, tag @jadiasnofficial. Hadiah: akses Premium gratis untuk 10 pemenang/minggu. Ini content Reach murni yang bisa viral organik.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 500+ UGC posts, 10K reach per post, 1,000 new followers</div>
+      </div>
+    </div>
+
+    <!-- MKT 8 -->
+    <div class="action-card">
+      <div class="action-num mkt">8</div>
+      <div class="action-body">
+        <h4>Optimasi Status WA untuk 14K+ Premium</h4>
+        <p>Channel yang sudah ada tapi belum optimal. 14,640+ Premium punya kontak WA. Broadcast Status WA harian: tips soal, motivasi, countdown CPNS, promo flash sale. Template Status WA v3 sudah ada — implementasi konsisten 2×/hari pagi & sore. Ini channel gratis dengan open rate tertinggi.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: 2 Status WA/hari konsisten, view rate >40%</div>
+      </div>
+    </div>
+
+    <!-- MKT 9 -->
+    <div class="action-card">
+      <div class="action-num mkt">9</div>
+      <div class="action-body">
+        <h4>Retargeting Ads — Pixel + Lookalike Audience</h4>
+        <p>Banyak visitor yang bounce dari halaman pricing tanpa konversi. Setup Meta Pixel + TikTok Pixel di landing page JadiASN. Buat retargeting ads untuk: (1) Visitor pricing page yang tidak beli, (2) User yang download tapi belum Premium, (3) Lookalike audience dari customer Premium. Budget Rp50K/hari dulu sebagai test.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-month">⏱ Bulan Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: ROAS >3×, cost per acquisition <Rp50K</div>
+      </div>
+    </div>
+
+    <!-- MKT 10 -->
+    <div class="action-card">
+      <div class="action-num mkt">10</div>
+      <div class="action-body">
+        <h4>Community Building — Grup Telegram CPNS Gratis</h4>
+        <p>Bangun komunitas top-of-funnel gratis. Buat grup Telegram "Komunitas CPNS 2026" — isi: sharing tips harian, diskusi soal, info jadwal pendaftaran, motivasi. Dari 14K Premium, rekrut 500 member awal. Lalu grow organik dari TikTok/IG. Komunitas = retention engine + referral natural.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-month">⏱ Bulan Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 1,000 member aktif dalam 60 hari, 5% conversion ke Premium</div>
+      </div>
+    </div>
+
+  </div><!-- /marketing plans -->
+
+  <!-- DIVIDER -->
+  <div style="height:2px;background:linear-gradient(90deg,#F59E0B,#EF4444);border-radius:2px;margin:32px 0;"></div>
+
+  <!-- ==================== SALES ==================== -->
+  <div class="section">
+    <div class="plan-section-header">
+      <div class="plan-icon sls">S</div>
+      <div>
+        <h3>10 Rencana Sales</h3>
+        <span>Fokus: Aktivasi Ghost/Dormant users, tingkatkan konversi 15.2% → 23%, dan kejar revenue gap Rp466Jt</span>
+      </div>
+    </div>
+
+    <!-- SLS 1 -->
+    <div class="action-card">
+      <div class="action-num sls top3">1</div>
+      <div class="action-body">
+        <h4>Ghost User Activation Sprint — 2,747 User <span class="action-tag priority">🔥 TOP PRIORITY</span></h4>
+        <p>Data Centil: <strong>2,747 user (19%) tidak pernah mencoba latihan soal sama sekali</strong>. Ini "uang di atas meja". Kirim push notification + WA personal: "Kamu belum mulai latihan — coba 5 soal pertama sekarang, cuma 3 menit!" Onboarding flow: 1 klik → langsung soal pertama → skor instan → ajakan lanjut. Target: konversi 30% Ghost → Warm dalam 14 hari.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: 824 Ghost → Active (30%), potential revenue Rp110Jt+</div>
+      </div>
+    </div>
+
+    <!-- SLS 2 -->
+    <div class="action-card">
+      <div class="action-num sls top3">2</div>
+      <div class="action-body">
+        <h4>Dormant & Cold Win-Back Campaign <span class="action-tag priority">🔥 TOP PRIORITY</span></h4>
+        <p>2,481 user Dormant+Cold (17%) sudah bayar tapi berhenti belajar. Kirim sequence "We miss you": Day 1: reminder personal + progress hilang. Day 3: peer comparison "Teman seangkatanmu sudah 500 soal, kamu baru 20". Day 7: special offer perpanjangan diskon 25%. Pakai data Intercom lifecycle marketing approach.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: Re-activate 500 user (20%), perpanjangan Rp85Jt+</div>
+      </div>
+    </div>
+
+    <!-- SLS 3 -->
+    <div class="action-card">
+      <div class="action-num sls top3">3</div>
+      <div class="action-body">
+        <h4>Follow-Up Otomatis Transaksi Pending <span class="action-tag priority">🔥 TOP PRIORITY</span></h4>
+        <p>Dari data Centil, banyak transaksi status=0 (pending/abandoned). Ini orang yang <strong>sudah niat beli tapi belum bayar</strong>. Setup follow-up otomatis 3× via WA: (1) 1 jam: "Pembayaranmu belum selesai, klik untuk lanjut", (2) 24 jam: "Kuota promo tinggal X — selesaikan sekarang", (3) 72 jam: last chance + bonus. Recovery rate abandoned cart bisa 15-25%.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: Recovery 20% pending → paid, tambahan Rp40-60Jt/bulan</div>
+      </div>
+    </div>
+
+    <!-- SLS 4 -->
+    <div class="action-card">
+      <div class="action-num sls">4</div>
+      <div class="action-body">
+        <h4>Upsell Early Renewal — Diskon Loyalty 30 Hari Sebelum Expired</h4>
+        <p>Banyak Premium yang expired lalu hilang. Proaktif: 30 hari sebelum expired, kirim offer perpanjangan dengan harga loyalty (diskon 15-20%). "Paketmu habis 30 hari lagi — perpanjang sekarang, hemat Rp50K". Ini lebih murah daripada akuisisi baru. ARPU perpanjangan sudah lebih tinggi (Rp169K vs Rp130K avg).</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: Renewal rate naik dari ~30% → 50%, retain 500 user/bulan</div>
+      </div>
+    </div>
+
+    <!-- SLS 5 -->
+    <div class="action-card">
+      <div class="action-num sls">5</div>
+      <div class="action-body">
+        <h4>Conversion Rate Optimization — Halaman Pricing</h4>
+        <p>Konversi 15.2% vs target 23%. Gap 7.8pp. A/B test halaman pricing: (1) Tambah urgency counter "Sisa 47 kuota harga promo", (2) Tampilkan social proof "2,129 orang upgrade bulan ini", (3) Highlight value: "881 paket latsoal + 62 video + 673 sesi LC", (4) Money-back guarantee 7 hari. Setiap 1% kenaikan konversi = ~Rp15Jt/bulan tambahan.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: Konversi 15.2% → 20% dalam 30 hari</div>
+      </div>
+    </div>
+
+    <!-- SLS 6 -->
+    <div class="action-card">
+      <div class="action-num sls">6</div>
+      <div class="action-body">
+        <h4>Referral Program — "Ajak 3 Teman, Gratis 1 Bulan"</h4>
+        <p>16,769 Active Premium = potensi army referral. Buat program: share link referral unik → teman download & daftar Premium → referrer dapat 1 bulan gratis per 3 referral sukses. NPS Promoter sudah ada — mereka INGIN merekomendasikan, tinggal kasih mekanisme. CAC via referral mendekati Rp0.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-high">⬆ Impact Tinggi</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-month">⏱ Bulan Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 1,000 referral aktif, 500 Premium baru dari referral, CAC <Rp20K</div>
+      </div>
+    </div>
+
+    <!-- SLS 7 -->
+    <div class="action-card">
+      <div class="action-num sls">7</div>
+      <div class="action-body">
+        <h4>Flash Sale Mingguan — 48 Jam + Countdown</h4>
+        <p>Revenue Juni butuh sprint. Buat flash sale tiap Senin-Selasa (48 jam): diskon 20-30% dari harga promo + countdown timer di app & WA Status. Efek psikologis urgency + scarcity. Rotate: minggu 1 paket 1 Tahun, minggu 2 paket 6 Bulan, minggu 3 bundle SKD+SKB. Jangan setiap hari supaya tidak devaluasi brand.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-low">✦ Effort Rendah</span>
+          <span class="action-tag time-now">⏱ Mulai Sekarang</span>
+        </div>
+        <div class="action-kpi">KPI Target: 2× spike revenue di hari flash sale, +Rp30Jt/minggu</div>
+      </div>
+    </div>
+
+    <!-- SLS 8 -->
+    <div class="action-card">
+      <div class="action-num sls">8</div>
+      <div class="action-body">
+        <h4>Bundle Premium SKD + SKB — Paket Ultimate</h4>
+        <p>Data: Avg harga Rp145K sudah 112% target — user bersedia bayar lebih. Buat paket "Ultimate SKD+SKB 1 Tahun" di Rp299K (value Rp750K). Differentiator utama JadiASN vs kompetitor: paket SKD+SKB lengkap. Push ini sebagai flagship product. Naikkan ARPU sekaligus lock-in customer lebih lama.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-med">✦ Effort Sedang</span>
+          <span class="action-tag time-week">⏱ Minggu Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 15% dari new Premium pilih Ultimate, ARPU naik ke Rp200K+</div>
+      </div>
+    </div>
+
+    <!-- SLS 9 -->
+    <div class="action-card">
+      <div class="action-num sls">9</div>
+      <div class="action-body">
+        <h4>Paket Corporate/Instansi — B2B Channel</h4>
+        <p>Untapped market: bimbel offline, lembaga pelatihan, instansi pemerintah yang kirim pegawai ikut CPNS. Tawarkan paket grup 10-50 akun dengan diskon volume 30-40%. Satu deal B2B bisa = 50 individual sales. Prospek via LinkedIn + cold email ke HR bimbel besar dan lembaga diklat.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-high">✦ Effort Tinggi</span>
+          <span class="action-tag time-month">⏱ Bulan Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 3 deal B2B, 100 akun korporat, revenue Rp30-50Jt</div>
+      </div>
+    </div>
+
+    <!-- SLS 10 -->
+    <div class="action-card">
+      <div class="action-num sls">10</div>
+      <div class="action-body">
+        <h4>Live Class Exclusive sebagai Premium Tier Add-On</h4>
+        <p>673 sesi Live Class rekaman sudah jadi aset. Buat tier "Premium Plus" dengan akses Live Class interaktif + mentoring personal. Harga Rp399K/tahun. Untuk Hot users (2,519) yang sudah aktif dan ingin lebih — mereka adalah kandidat upsell terbaik. Revenue per user naik 2× tanpa tambah customer baru.</p>
+        <div class="action-meta">
+          <span class="action-tag impact-med">⬆ Impact Sedang</span>
+          <span class="action-tag effort-high">✦ Effort Tinggi</span>
+          <span class="action-tag time-month">⏱ Bulan Ini</span>
+        </div>
+        <div class="action-kpi">KPI Target: 10% Hot users upgrade (252 user), tambahan revenue Rp100Jt</div>
+      </div>
+    </div>
+
+  </div><!-- /sales plans -->
+
+  <!-- SUMMARY IMPACT TABLE -->
+  <div class="table-card">
+    <h3>📊 Ringkasan Impact Estimasi — Jika Semua 20 Action Dieksekusi</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Kategori</th>
+          <th>Quick Wins (Minggu 1-2)</th>
+          <th>Medium Term (Bulan 1-2)</th>
+          <th>Long Term (Quarter)</th>
+          <th>Total Estimasi Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Marketing</strong></td>
+          <td>Reach +300%, Follower +2K</td>
+          <td>Download +5K/bulan, 5 kolaborasi</td>
+          <td>SEO 5K visits/bln, Komunitas 1K</td>
+          <td><strong>Download 2× lipat</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Sales</strong></td>
+          <td>Ghost +824 active, Pending +Rp50Jt</td>
+          <td>Konversi 15% → 20%, Renewal +500</td>
+          <td>Referral 500/bln, B2B 3 deals</td>
+          <td><strong>+Rp300-400Jt/quarter</strong></td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>COMBINED</strong></td>
+          <td colspan="3">Prioritas 1-3 di masing-masing kategori bisa dieksekusi paralel minggu ini</td>
+          <td><strong>Revenue +40-60%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EXECUTION MATRIX -->
+  <div class="insight-grid">
+    <div class="insight-card danger">
+      <h4>🚨 Eksekusi Hari Ini (6 Actions)</h4>
+      <p><strong>Marketing:</strong> M1 (Rebalance Pillar), M2 (TikTok Factory), M8 (Status WA)<br>
+      <strong>Sales:</strong> S1 (Ghost Activation), S2 (Dormant Win-Back), S3 (Follow-Up Pending)<br>
+      <span style="color:#EF4444;font-weight:700;">Ini 6 action dengan effort rendah tapi impact tertinggi — tidak butuh development baru.</span></p>
+    </div>
+    <div class="insight-card warning">
+      <h4>⚡ Eksekusi Minggu Ini (7 Actions)</h4>
+      <p><strong>Marketing:</strong> M3 (Lead Magnet), M4 (Influencer), M5 (Testimonial), M7 (Reels Challenge)<br>
+      <strong>Sales:</strong> S4 (Early Renewal), S5 (CRO Pricing), S8 (Bundle SKD+SKB)<br>
+      <span style="color:#F59E0B;font-weight:700;">Butuh koordinasi tim tapi bisa launch dalam 7 hari.</span></p>
+    </div>
+    <div class="insight-card info">
+      <h4>📅 Eksekusi Bulan Ini (7 Actions)</h4>
+      <p><strong>Marketing:</strong> M6 (SEO Blog), M9 (Retargeting Ads), M10 (Komunitas)<br>
+      <strong>Sales:</strong> S6 (Referral Program), S7 (Flash Sale), S9 (B2B), S10 (Premium Plus Tier)<br>
+      <span style="color:#2D5BFF;font-weight:700;">Butuh development/setup lebih lama — mulai planning sekarang.</span></p>
+    </div>
+    <div class="insight-card success">
+      <h4>✅ Expected Outcome Q3 2026</h4>
+      <p>Jika 20 action dieksekusi dengan konsisten:<br>
+      • <strong>Download:</strong> 442/hari → 900/hari (2× lipat)<br>
+      • <strong>Premium:</strong> konversi 15% → 20%+<br>
+      • <strong>Revenue:</strong> ~Rp330Jt/bln → Rp500Jt+/bln<br>
+      • <strong>Retention:</strong> Ghost 19% → <10%<br>
+      <span style="color:#10B981;font-weight:700;">Fokus di 6 quick wins dulu — result visible dalam 14 hari.</span></p>
+    </div>
+  </div>
+
+  </div><!-- /actionplan -->
+
 
   <div class="footer">
-    Dashboard Marketing, Sales & Strategi Konten JadiASN — Data per 22 Juni 2026 | Marketing: SocialBlade | Sales: Centil DB | Strategi: Framework "Bukan Cuma Posting"<br>
+    Dashboard Marketing, Sales, Strategi Konten & Action Plan JadiASN — Data per 22 Juni 2026 | Marketing: SocialBlade | Sales: Centil DB | Strategi: Framework "Bukan Cuma Posting"<br>
     Dibuat oleh Cerebrum Analytics Engine | Revenue & transaksi = data aktual produksi
   </div>
 </div>
